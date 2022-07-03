@@ -73,7 +73,8 @@ type Mutation {
     authorCount: Int!,
     allBooks(author: String, genre: String): [Book!]!,
     allAuthors: [Author!]!,
-    me: User
+    me: User,
+    genres: [String!]
   }
 `
 
@@ -95,6 +96,12 @@ const resolvers = {
         allAuthors: async () => Author.find({}),
         me: (root, args, context) => {
             return context.currentUser
+        },
+        genres: async (root, args) => {
+            const books = await Book.find({})
+            const genreSet = new Set()
+            books.map(book => book.genres.map(genre => genreSet.add(genre)))
+            return genreSet
         }
     },
     Author: {
