@@ -10,15 +10,14 @@ const NewBook = (props) => {
   const [genres, setGenres] = useState([])
   const [createBook] = useMutation(CREATE_BOOK, {
     update: (cache, response) => {
-      cache.updateQuery({ query: ALL_BOOKS }, data => {
-        console.log(cache)
+      cache.updateQuery({ query: ALL_BOOKS, variables: { genre: props.genre } }, data => {
         return {
           allBooks: data.allBooks.concat(response.data.addBook),
         }
       })
     }
   },
-  { refetchQueries: [{ query: ALL_AUTHORS }, { query: ALL_GENRES }] })
+    { refetchQueries: [{ query: ALL_AUTHORS }, { query: ALL_GENRES }] })
 
   if (!props.show) {
     return null

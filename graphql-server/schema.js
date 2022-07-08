@@ -56,5 +56,9 @@ type Mutation {
     me: User,
     genres: [String!]
   }
+
+  type Subscription {
+    bookAdded: Book!
+  }
 `
 module.exports = typeDefs

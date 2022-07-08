@@ -3,6 +3,10 @@ const Book = require('./models/Book')
 const { UserInputError } = require('apollo-server')
 const User = require('./models/User')
 const jwt = require('jsonwebtoken')
+const { PubSub } = require('graphql-subscriptions')
+const JWT_SECRET = require('./secret')
+const pubsub = new PubSub()
+
 const resolvers = {
     Query: {
         bookCount: async () => Book.collection.countDocuments(),
@@ -44,7 +48,9 @@ const resolvers = {
             const bookAuthor = await Author.findOne({ name: author })
             book.author = bookAuthor
             try {
-                return book.save()
+                const savedBook = book.save()
+                pubsub.publish('BOOK_ADDED', { bookAdded: savedBook })
+                return savedBook
             }
             catch (error) {
                 throw new UserInputError(error.message, { invalidArgs: args })
@@ -92,6 +98,11 @@ const resolvers = {
                     })
                 })
         },
+    },
+    Subscription: {
+        bookAdded: {
+            subscribe: () => pubsub.asyncIterator(['BOOK_ADDED'])
+        }
     }
 }
 
