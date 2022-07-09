@@ -13,7 +13,7 @@ const { SubscriptionServer } = require('subscriptions-transport-ws')
 const JWT_SECRET = require('./secret')
 
 
-const MONGODB_URI = 'mongodb+srv://sysadmin:3iDKty7jvBqWpkc@cluster0.wkq1i.mongodb.net/library?retryWrites=true&w=majority'
+const MONGODB_URI = 'MONGODB_URL'
 
 console.log('connecting to', MONGODB_URI)
 
